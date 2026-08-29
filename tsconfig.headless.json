@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["ES2022", "DOM"],
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "types": ["@pptb/types"],
+        "strict": true,
+        "skipLibCheck": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "sourceMap": true
+    },
+    "include": [
+        "src/headless.ts",
+        "src/services/UniversalSearchService.ts",
+        "src/services/MetadataCache.ts",
+        "src/types/search.ts",
+        "src/types/agent.ts",
+        "src/vite-env.d.ts"
+    ]
+}
