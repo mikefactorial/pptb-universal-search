@@ -1,6 +1,6 @@
 {
   "name": "pptb-universal-search",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "displayName": "Universal Search",
   "description": "A comprehensive search tool for finding records, metadata, and solution components across Dataverse environments using wildcards and specific values.",
   "contributors": [
@@ -10,11 +10,11 @@
     }
   ],
   "license": "MIT",
+  "icon": "icons/universal-search.svg",
   "configurations": {
     "repository": "https://github.com/mikefactorial/pptb-universal-search",
-    "website": "https://mikefactorial.com/dynamics-365-universal-search-for-xrmtoolbox/",
-    "iconUrl": "https://github.com/mikefactorial/pptb-universal-search/blob/main/icon-64.png",
-    "readmeUrl": "https://github.com/mikefactorial/pptb-universal-search/blob/main/README.md"
+    "website": "https://www.mikefactorial.com/tools/pptb-universal-search",
+    "readmeUrl": "https://raw.githubusercontent.com/mikefactorial/pptb-universal-search/main/README.md"
   },
   "author": "Mike!",
   "repository": {
@@ -35,7 +35,8 @@
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "finalize-package": "npm shrinkwrap",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "validate": "pptb-validate"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -44,11 +45,11 @@
   "devDependencies": {
     "@commitlint/cli": "^18.0.0",
     "@commitlint/config-conventional": "^18.0.0",
-    "@pptb/types": "^1.0.1",
+    "@pptb/types": "^1.2.5",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^10.0.7",
-    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/github": "^12.0.9",
+    "@semantic-release/npm": "^13.1.5",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
@@ -57,7 +58,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^2.1.0",
     "jsdom": "^25.0.1",
-    "semantic-release": "^23.0.0",
+    "semantic-release": "^25.0.9",
     "tsup": "^8.5.1",
     "typescript": "^5.6.3",
     "vite": "^7.1.11",

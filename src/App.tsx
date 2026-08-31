@@ -27,7 +27,6 @@ function App() {
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [isSearching, setIsSearching] = useState(false);
     const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
-    const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
     const [isFullScreen, setIsFullScreen] = useState(false);
     const [searchProgress, setSearchProgress] = useState<SearchProgress>({
         currentEntity: '',
@@ -40,16 +39,10 @@ function App() {
         cancel: () => {}
     });
 
-    // Toggle functions
-    const toggleHeader = () => {
-        setIsHeaderCollapsed(!isHeaderCollapsed);
-    };
-
     const toggleFullScreen = () => {
         const newFullScreen = !isFullScreen;
         setIsFullScreen(newFullScreen);
         setIsLeftPanelCollapsed(newFullScreen);
-        setIsHeaderCollapsed(newFullScreen);
     };
 
     // Keyboard shortcut for fullscreen toggle
@@ -274,29 +267,6 @@ function App() {
 
     return (
         <div className={`app ${isFullScreen ? 'fullscreen' : ''}`}>
-            <header className={`header ${isHeaderCollapsed ? 'collapsed' : ''}`}>
-                <div className="header-content">
-                    <h1>🔍 Universal Search</h1>
-                    <p className="subtitle">Search across records, metadata, and solution components</p>
-                </div>
-                <div className="header-controls">
-                    <button 
-                        className="fullscreen-toggle-btn"
-                        onClick={toggleFullScreen}
-                        title={isFullScreen ? 'Exit fullscreen (F11 or Ctrl+Enter)' : 'Enter fullscreen (F11 or Ctrl+Enter)'}
-                    >
-                        {isFullScreen ? '🗗' : '🗖'}
-                    </button>
-                    <button 
-                        className="header-toggle-btn"
-                        onClick={toggleHeader}
-                        title={isHeaderCollapsed ? 'Show header' : 'Hide header'}
-                    >
-                        {isHeaderCollapsed ? '▼' : '▲'}
-                    </button>
-                </div>
-            </header>
-
             <div className="main-container">
                 <div className={`left-panel ${isLeftPanelCollapsed ? 'collapsed' : ''}`}>
                     <EntitySelectionPanel

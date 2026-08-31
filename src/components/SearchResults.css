@@ -119,6 +119,48 @@
   user-select: none;
 }
 
+/* Column resizing. The explicit table width comes from the component - without a
+   definite width the browser ignores table-layout: fixed and the <col> widths
+   become suggestions that cell content can override. */
+.search-results .data-grid.resizable {
+  table-layout: fixed;
+}
+
+.search-results .column-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 7px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+  z-index: 2;
+}
+
+.search-results .column-resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 3px;
+  width: 2px;
+  height: 100%;
+  background: var(--primary-color);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.search-results .column-resizer:hover::after {
+  opacity: 1;
+}
+
+/* Keep the resize cursor while dragging, even outside the handle */
+body.column-resizing,
+body.column-resizing * {
+  cursor: col-resize !important;
+  user-select: none !important;
+}
+
 .search-results .data-grid th.sortable:hover {
   background: #e9ecef;
 }
@@ -155,6 +197,12 @@
 
 .search-results .data-grid td:last-child {
   border-right: none;
+}
+
+/* The 200px cap sizes columns before measuring; once the user can resize,
+   the column width is the only thing that should clip a cell. */
+.search-results .data-grid.resizable td {
+  max-width: none;
 }
 
 .search-results .data-row:hover {
