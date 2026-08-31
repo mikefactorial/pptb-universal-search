@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Universal Search">
+  <title>Universal Search</title>
+  <rect width="24" height="24" rx="5" fill="#667eea" />
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" transform="translate(2.4 2.4) scale(0.8)">
+    <g stroke-width="1.7" opacity="0.75">
+      <path d="M5.4 6.6H14.2" />
+      <path d="M4.6 10H15.2" />
+      <path d="M5.4 13.4H12.8" />
+    </g>
+    <circle cx="10" cy="10" r="6.6" stroke-width="2.1" />
+    <path d="M15.2 15.2 21 21" stroke-width="2.9" />
+  </g>
+</svg>

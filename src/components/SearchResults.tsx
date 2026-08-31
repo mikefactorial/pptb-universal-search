@@ -1,6 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useLayoutEffect, type MouseEvent as ReactMouseEvent } from 'react';
 import { SearchOptions } from '../types/search';
 import './SearchResults.css';
+
+const MIN_COLUMN_WIDTH = 60;
 
 interface SearchResult {
     id: string;
@@ -23,6 +25,10 @@ export function SearchResults({ results, searchText, isSearching, searchOptions 
     const [activeTabIndex, setActiveTabIndex] = useState(0);
     const [sortColumn, setSortColumn] = useState<string | null>(null);
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+    const [columnWidths, setColumnWidths] = useState<Record<string, number>>({});
+    const headerRefs = useRef<Record<string, HTMLTableCellElement | null>>({});
+    const tableRef = useRef<HTMLTableElement>(null);
+    const justResizedRef = useRef(false);
 
     // Filter out results with errors or no records for tabs
     const validResults = results.filter(result => !result.error && result.records.length > 0);
@@ -113,12 +119,82 @@ export function SearchResults({ results, searchText, isSearching, searchOptions 
     }, [activeResult, sortColumn, sortDirection]);
 
     const handleSort = (column: string) => {
+        // Swallow the click the browser fires at the end of a column drag
+        if (justResizedRef.current) return;
+
         if (sortColumn === column) {
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
             setSortColumn(column);
             setSortDirection('asc');
         }
+    };
+
+    // Column widths are only usable once every column in the current tab has one
+    const hasColumnWidths = columns.length > 0 && columns.every(column => columnWidths[column]);
+    const totalColumnWidth = hasColumnWidths
+        ? columns.reduce((sum, column) => sum + columnWidths[column], 0)
+        : 0;
+
+    // Capture the widths the browser picked for us before switching the table to a
+    // fixed layout, so turning on resizing doesn't visibly reflow the grid. Runs
+    // again whenever the column set changes (i.e. a different result tab).
+    useLayoutEffect(() => {
+        if (hasColumnWidths || columns.length === 0) return;
+
+        const measured: Record<string, number> = {};
+        let total = 0;
+        for (const column of columns) {
+            const width = headerRefs.current[column]?.offsetWidth;
+            // jsdom and pre-paint renders report 0 - leave the grid on auto layout
+            if (!width) return;
+            measured[column] = width;
+            total += width;
+        }
+
+        // Collapsed borders are shared between cells, so the header widths can add
+        // up to a little more than the table itself. Trim the last column to match
+        // rather than introduce a one-pixel horizontal scrollbar.
+        const tableWidth = tableRef.current?.offsetWidth ?? 0;
+        if (tableWidth && total > tableWidth) {
+            const lastColumn = columns[columns.length - 1];
+            measured[lastColumn] = Math.max(MIN_COLUMN_WIDTH, measured[lastColumn] - (total - tableWidth));
+        }
+
+        setColumnWidths(measured);
+    }, [columns, hasColumnWidths]);
+
+    const handleResizeStart = (event: ReactMouseEvent, column: string) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const startX = event.clientX;
+        const startWidth = columnWidths[column] ?? headerRefs.current[column]?.offsetWidth ?? MIN_COLUMN_WIDTH;
+        let dragged = false;
+
+        const handleMouseMove = (moveEvent: MouseEvent) => {
+            dragged = true;
+            const width = Math.max(MIN_COLUMN_WIDTH, startWidth + moveEvent.clientX - startX);
+            setColumnWidths(previous => ({ ...previous, [column]: width }));
+        };
+
+        const handleMouseUp = () => {
+            document.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseup', handleMouseUp);
+            document.body.classList.remove('column-resizing');
+
+            if (dragged) {
+                // When the pointer leaves the handle mid-drag the browser fires the
+                // closing click on the nearest common ancestor - the <th> - where it
+                // would sort the column that was just resized.
+                justResizedRef.current = true;
+                setTimeout(() => { justResizedRef.current = false; }, 0);
+            }
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', handleMouseUp);
+        document.body.classList.add('column-resizing');
     };
 
     const getCellValue = (record: any, column: string): any => {
@@ -446,12 +522,26 @@ export function SearchResults({ results, searchText, isSearching, searchOptions 
                             
                             {activeResult.records.length > 0 ? (
                                 <div className="data-grid-container">
-                                    <table className="data-grid">
+                                    <table
+                                        ref={tableRef}
+                                        className={`data-grid ${hasColumnWidths ? 'resizable' : ''}`}
+                                        // table-layout: fixed is ignored unless the table has a
+                                        // definite width, so size it to its columns explicitly
+                                        style={hasColumnWidths ? { width: `${totalColumnWidth}px` } : undefined}
+                                    >
+                                        {hasColumnWidths && (
+                                            <colgroup>
+                                                {columns.map(column => (
+                                                    <col key={column} style={{ width: `${columnWidths[column]}px` }} />
+                                                ))}
+                                            </colgroup>
+                                        )}
                                         <thead>
                                             <tr>
                                                 {columns.map(column => (
-                                                    <th 
-                                                        key={column} 
+                                                    <th
+                                                        key={column}
+                                                        ref={element => { headerRefs.current[column] = element; }}
                                                         className={`sortable ${sortColumn === column ? `sorted-${sortDirection}` : ''}`}
                                                         onClick={() => handleSort(column)}
                                                         title={`Click to sort by ${column}`}
@@ -459,12 +549,21 @@ export function SearchResults({ results, searchText, isSearching, searchOptions 
                                                         <div className="header-content">
                                                             <span>{column.replace(/@OData\.Community\.Display\.V1\.FormattedValue$/, '')}</span>
                                                             <span className="sort-indicator">
-                                                                {sortColumn === column ? 
-                                                                    (sortDirection === 'asc' ? ' ↑' : ' ↓') : 
+                                                                {sortColumn === column ?
+                                                                    (sortDirection === 'asc' ? ' ↑' : ' ↓') :
                                                                     ' ↕'
                                                                 }
                                                             </span>
                                                         </div>
+                                                        <div
+                                                            className="column-resizer"
+                                                            role="separator"
+                                                            aria-orientation="vertical"
+                                                            aria-label={`Resize ${column} column`}
+                                                            onMouseDown={event => handleResizeStart(event, column)}
+                                                            onClick={event => event.stopPropagation()}
+                                                            title="Drag to resize column"
+                                                        />
                                                     </th>
                                                 ))}
                                             </tr>

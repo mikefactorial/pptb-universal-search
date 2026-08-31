@@ -88,7 +88,7 @@ body {
     background: var(--bg-gradient);
     color: var(--text-primary);
     line-height: 1.5;
-    padding: 16px;
+    padding: 0;
     min-height: 100vh;
     overflow: hidden;
     margin: 0;
@@ -96,7 +96,7 @@ body {
 
 #root {
     margin: 0 auto;
-    height: calc(100vh - 32px);
+    height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -117,7 +117,6 @@ body {
   bottom: 0;
   z-index: 1000;
   background: var(--bg-gradient);
-  padding: 16px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
@@ -142,81 +141,17 @@ body {
   50% { opacity: 0.7; }
 }
 
-.app.fullscreen .header {
-  margin-bottom: 8px;
-}
-
 .app.fullscreen .main-container {
-  height: calc(100vh - 32px);
+  height: 100vh;
 }
 
+/* Only used by the "no connection" splash screen */
 .header {
     text-align: center;
     color: var(--text-inverse);
     margin-bottom: 16px;
     flex-shrink: 0;
     padding: 8px 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.header.collapsed {
-    height: 32px;
-    margin-bottom: 8px;
-    overflow: hidden;
-}
-
-.header.collapsed .header-content {
-    opacity: 0;
-    transform: translateY(-20px);
-}
-
-.header-content {
-    flex: 1;
-    transition: all 0.3s ease;
-}
-
-.header-controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    position: absolute;
-    right: 2px;
-    top: 2px;
-}
-
-.header-toggle-btn {
-    display:none !important;
-}
-.header-toggle-btn,
-.fullscreen-toggle-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--text-inverse);
-    border-radius: 4px;
-    padding: 6px 8px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s ease;
-    min-width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-}
-
-.header-toggle-btn:hover,
-.fullscreen-toggle-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-.fullscreen-toggle-btn {
-    font-size: 16px;
 }
 
 .header h1 {
@@ -234,6 +169,13 @@ body {
     margin-left: auto;
     font-size: 14px;
     opacity: 0.9;
+}
+
+/* The app is flush to the edges, so the splash screen brings its own spacing */
+.error-message {
+    padding: 16px;
+    text-align: center;
+    color: var(--text-inverse);
 }
 
 .main-container {
@@ -275,7 +217,7 @@ body {
   width: 300px;
   min-width: 300px;
   background: var(--bg-primary);
-  border-radius: 8px 0 0 8px;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -295,7 +237,7 @@ body {
 .right-panel {
   flex: 1;
   background: var(--bg-primary);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -305,7 +247,7 @@ body {
 
 /* Update the right panel expansion to not use :has() selector */
 .right-panel.expanded {
-  border-radius: 8px;
+  border-radius: 0;
 }
 
 /* Panel Toggle Arrow - Fixed on Right Panel Left Side */
@@ -1241,16 +1183,6 @@ body {
     width: auto;
   }
   
-  .header {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .header-controls {
-    justify-content: center;
-  }
-  
-  /* Mobile: Start with collapsed panel for more space */
   .main-container {
     flex-direction: column;
   }
@@ -1283,10 +1215,6 @@ body {
   }
 }
 @media (max-width: 768px) {
-    body {
-        padding: 10px;
-    }
-
     .header h1 {
         font-size: 1.8rem;
     }

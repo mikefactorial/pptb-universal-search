@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="Universal Search">
+  <title>Universal Search</title>
+  <g fill="none" stroke="currentColor" stroke-linecap="round">
+    <!-- Records seen through the lens. Drawn as chords of the circle so the icon
+         needs no clip path, and therefore no ids that could collide when the
+         toolbox inlines several tool icons onto one page. -->
+    <g stroke-width="1.5" opacity="0.6">
+      <path d="M5.4 6.6H14.2" />
+      <path d="M4.6 10H15.2" />
+      <path d="M5.4 13.4H12.8" />
+    </g>
+    <circle cx="10" cy="10" r="6.6" stroke-width="1.9" />
+    <path d="M15.2 15.2 21 21" stroke-width="2.6" />
+  </g>
+</svg>
