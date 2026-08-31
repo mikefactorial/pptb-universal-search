@@ -19,7 +19,7 @@
   "author": "Mike!",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/mikefactorial/pptb-universal-search.git"
   },
   "main": "index.html",
   "type": "module",
